@@ -342,6 +342,9 @@ MonoBehaviour:
   skyOcclusionIntensityMultiplier:
     m_OverrideState: 1
     m_Value: 1
+  worldOffset:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0, z: 0}
 --- !u!114 &-1216621516061285780
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -374,6 +377,9 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   highQualityFiltering:
+    m_OverrideState: 1
+    m_Value: 0
+  filter:
     m_OverrideState: 1
     m_Value: 0
   downscale:
@@ -462,8 +468,6 @@ MonoBehaviour:
   - {fileID: -6288072647309666549}
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
-  - {fileID: -7750755424749557576}
-  - {fileID: -5139089513906902183}
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -774,6 +778,81 @@ MonoBehaviour:
   contribution:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &3579069017674786269
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb66dc641fe8ef4c843eb98a8fa4058, type: 3}
+  m_Name: FullScreenFog
+  m_EditorClassIdentifier: Meryuhi.Effects.Fog.Runtime::Meryuhi.Rendering.FullScreenFog
+  active: 1
+  <displayName>k__BackingField: 
+  mode:
+    <fieldHash>k__BackingField: -221987760
+    m_OverrideState: 1
+    m_Value: 0
+  intensity:
+    <fieldHash>k__BackingField: 17362632
+    m_OverrideState: 1
+    m_Value: 0
+  color:
+    <fieldHash>k__BackingField: 256713024
+    m_OverrideState: 1
+    m_Value:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+  densityMode:
+    <fieldHash>k__BackingField: -2123451136
+    m_OverrideState: 1
+    m_Value: 2
+  startLine:
+    <fieldHash>k__BackingField: -208648000
+    m_OverrideState: 1
+    m_Value: 0
+  endLine:
+    <fieldHash>k__BackingField: 30702392
+    m_OverrideState: 1
+    m_Value: 10
+  startHeight:
+    <fieldHash>k__BackingField: 270052784
+    m_OverrideState: 1
+    m_Value: 5
+  endHeight:
+    <fieldHash>k__BackingField: -2110111376
+    m_OverrideState: 1
+    m_Value: 0
+  density:
+    <fieldHash>k__BackingField: -1870760984
+    m_OverrideState: 1
+    m_Value: 0.1
+  noiseMode:
+    <fieldHash>k__BackingField: -1631410592
+    m_OverrideState: 1
+    m_Value: 0
+  noiseTexture:
+    <fieldHash>k__BackingField: -1392060200
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  noiseIntensity:
+    <fieldHash>k__BackingField: -674009024
+    m_OverrideState: 1
+    m_Value: 0.5
+  noiseScale:
+    <fieldHash>k__BackingField: -195308240
+    m_OverrideState: 1
+    m_Value: 1
+  noiseScrollSpeed:
+    <fieldHash>k__BackingField: -90886024
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1}
 --- !u!114 &3959858460715838825
 MonoBehaviour:
   m_ObjectHideFlags: 3
