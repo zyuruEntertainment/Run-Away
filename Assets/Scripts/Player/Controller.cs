@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +22,7 @@ public class FPSController : MonoBehaviour
     private Vector3 horizontalVelocity;
     private float verticalVelocity;
     private float cameraPitch;
+    private bool isPaused;
 
     private void Awake()
     {
@@ -32,10 +34,25 @@ public class FPSController : MonoBehaviour
 
     private void Update()
     {
+        mouseSensitivity = GameSettings.MouseSensitivity;
+
+        if (Time.timeScale == 0f)
+        {
+            isPaused = true;
+            return;
+        }
+
+        if (isPaused)
+        {
+            isPaused = false;
+            LockCursor();
+        }
+
         HandleCursor();
         Look();
         Move();
     }
+
 
     private void HandleCursor()
     {
@@ -44,12 +61,6 @@ public class FPSController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-        }
-
-        if (Mouse.current != null &&
-            Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            LockCursor();
         }
     }
 
@@ -112,7 +123,7 @@ public class FPSController : MonoBehaviour
 
         Vector3 targetVelocity = input * moveSpeed;
 
-        float acceleration = grounded
+        float acceleration = controller.isGrounded
             ? groundAcceleration
             : airAcceleration;
 
@@ -122,7 +133,7 @@ public class FPSController : MonoBehaviour
             acceleration * Time.deltaTime
         );
 
-        if (grounded &&
+        if (controller.isGrounded &&
             Keyboard.current != null &&
             Keyboard.current.spaceKey.wasPressedThisFrame)
         {

@@ -14,6 +14,7 @@ public class PlayerHealth : MonoBehaviour
     public MonoBehaviour[] playerControls;
 
     private bool isDead;
+    public bool IsDead => isDead;
 
     void Start()
     {
