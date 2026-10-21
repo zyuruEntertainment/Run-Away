@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -27,6 +26,7 @@ public class FPSController : MonoBehaviour
     {
         moveSpeed = walkSpeed;
         controller = GetComponent<CharacterController>();
+        mouseSensitivity = GameSettings.MouseSensitivity;
         LockCursor();
     }
 
