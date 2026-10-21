@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(AudioSource))]
 public class PlayerSprint : MonoBehaviour
 {
     [Header("Sprint")]
@@ -17,6 +16,8 @@ public class PlayerSprint : MonoBehaviour
     public float regenDelay = 1f;
 
     [Header("Audio")]
+    public AudioSource panicAudioSource;
+    public AudioSource breathingAudioSource;
     public AudioClip panicSound;
     public AudioClip heavyBreathingSound;
 
@@ -30,17 +31,24 @@ public class PlayerSprint : MonoBehaviour
 
     private float regenTimer;
     private FPSController movement;
-    private AudioSource audioSource;
     private bool breathingPlayed;
 
     private void Awake()
     {
         movement = GetComponent<FPSController>();
-        audioSource = GetComponent<AudioSource>();
         CurrentStamina = maxStamina;
 
-        audioSource.playOnAwake = false;
-        audioSource.loop = false;
+        if (panicAudioSource != null)
+        {
+            panicAudioSource.playOnAwake = false;
+            panicAudioSource.loop = false;
+        }
+
+        if (breathingAudioSource != null)
+        {
+            breathingAudioSource.playOnAwake = false;
+            breathingAudioSource.loop = false;
+        }
     }
 
     private void Update()
@@ -87,26 +95,33 @@ public class PlayerSprint : MonoBehaviour
 
         if (IsSprinting && !wasSprinting)
         {
-            if (panicSound != null)
+            if (panicAudioSource != null && panicSound != null)
             {
-                audioSource.Stop();
-                audioSource.clip = panicSound;
-                audioSource.loop = false;
-                audioSource.Play();
+                panicAudioSource.Stop();
+                panicAudioSource.clip = panicSound;
+                panicAudioSource.loop = false;
+                panicAudioSource.Play();
             }
         }
 
-        if (!IsSprinting && audioSource.clip == panicSound)
+        if (!IsSprinting && wasSprinting)
         {
-            audioSource.Stop();
-            audioSource.clip = null;
+            if (panicAudioSource != null)
+            {
+                panicAudioSource.Stop();
+                panicAudioSource.clip = null;
+            }
         }
 
         if (CurrentStamina <= 0f && !breathingPlayed)
         {
-            if (heavyBreathingSound != null)
+            if (breathingAudioSource != null &&
+                heavyBreathingSound != null)
             {
-                audioSource.PlayOneShot(heavyBreathingSound);
+                breathingAudioSource.Stop();
+                breathingAudioSource.clip = heavyBreathingSound;
+                breathingAudioSource.loop = false;
+                breathingAudioSource.Play();
             }
 
             breathingPlayed = true;

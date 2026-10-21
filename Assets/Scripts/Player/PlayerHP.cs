@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 
@@ -62,6 +63,7 @@ public class PlayerHealth : MonoBehaviour
         if (jumpscareAudio != null)
         {
             jumpscareAudio.Stop();
+            jumpscareAudio.loop = false;
             jumpscareAudio.Play();
         }
 
