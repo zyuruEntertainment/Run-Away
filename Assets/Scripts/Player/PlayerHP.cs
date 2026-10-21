@@ -1,12 +1,15 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHP = 100;
     public int currentHP = 100;
-    public Camera playerCamera;
-    public Transform monster;
+
+    public GameObject jumpscarePanel;
+    public AudioSource jumpscareAudio;
     public GameObject gameOverPanel;
+
     public MonoBehaviour[] playerControls;
 
     private bool isDead;
@@ -15,21 +18,24 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHP = maxHP;
 
+        if (jumpscarePanel != null)
+            jumpscarePanel.SetActive(false);
+
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
     }
 
     public void TakeDamage(int damage)
     {
-        if (isDead) return;
+        if (isDead || damage <= 0) return;
 
         currentHP = Mathf.Max(0, currentHP - damage);
 
         if (currentHP <= 0)
-            GameOver();
+            StartCoroutine(GameOverSequence());
     }
 
-    void GameOver()
+    IEnumerator GameOverSequence()
     {
         isDead = true;
 
@@ -39,23 +45,27 @@ public class PlayerHealth : MonoBehaviour
                 control.enabled = false;
         }
 
-        if (playerCamera != null && monster != null)
-        {
-            Vector3 direction =
-                monster.position - playerCamera.transform.position;
+        if (jumpscarePanel != null)
+            jumpscarePanel.SetActive(true);
 
-            if (direction.sqrMagnitude > 0.001f)
-            {
-                playerCamera.transform.rotation =
-                    Quaternion.LookRotation(direction);
-            }
-        }
+        if (jumpscareAudio != null)
+            jumpscareAudio.Play();
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        Time.timeScale = 1f;
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        if (jumpscarePanel != null)
+            jumpscarePanel.SetActive(false);
 
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (jumpscareAudio != null)
+            jumpscareAudio.Stop();
 
         Time.timeScale = 0f;
     }
