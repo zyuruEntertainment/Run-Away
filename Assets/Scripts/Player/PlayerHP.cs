@@ -45,11 +45,25 @@ public class PlayerHealth : MonoBehaviour
                 control.enabled = false;
         }
 
+        AudioSource[] allAudioSources =
+        FindObjectsByType<AudioSource>(
+            FindObjectsInactive.Include
+        );
+
+        foreach (AudioSource source in allAudioSources)
+        {
+            if (source != null)
+                source.Stop();
+        }
+
         if (jumpscarePanel != null)
             jumpscarePanel.SetActive(true);
 
         if (jumpscareAudio != null)
+        {
+            jumpscareAudio.Stop();
             jumpscareAudio.Play();
+        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
