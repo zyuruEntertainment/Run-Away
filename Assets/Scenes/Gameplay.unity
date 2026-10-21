@@ -992,7 +992,7 @@ MonoBehaviour:
   staminaDrain: 10
   staminaRegen: 15
   regenDelay: 1
-  panicSound: {fileID: 8300000, guid: 22fb85d5f9879bd4ba0ce6e85612b643, type: 3}
+  panicSound: {fileID: 8300000, guid: de449e56aca1852479cf72a45294180e, type: 3}
   heavyBreathingSound: {fileID: 8300000, guid: 680ca2b24f1dbb141b8cc365dde8c6fe, type: 3}
 --- !u!114 &476435684
 MonoBehaviour:

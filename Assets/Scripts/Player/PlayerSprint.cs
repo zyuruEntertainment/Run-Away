@@ -31,7 +31,6 @@ public class PlayerSprint : MonoBehaviour
     private float regenTimer;
     private FPSController movement;
     private AudioSource audioSource;
-    private bool panicPlayed;
     private bool breathingPlayed;
 
     private void Awake()
@@ -86,19 +85,21 @@ public class PlayerSprint : MonoBehaviour
             IsSprinting = false;
         }
 
-        if (IsSprinting && !wasSprinting && !panicPlayed)
+        if (IsSprinting && !wasSprinting)
         {
             if (panicSound != null)
             {
-                audioSource.PlayOneShot(panicSound);
+                audioSource.Stop();
+                audioSource.clip = panicSound;
+                audioSource.loop = false;
+                audioSource.Play();
             }
-
-            panicPlayed = true;
         }
 
-        if (!IsSprinting)
+        if (!IsSprinting && audioSource.clip == panicSound)
         {
-            panicPlayed = false;
+            audioSource.Stop();
+            audioSource.clip = null;
         }
 
         if (CurrentStamina <= 0f && !breathingPlayed)
