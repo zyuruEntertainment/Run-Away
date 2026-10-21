@@ -4,6 +4,27 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Intro.unity
+    guid: 252386df16c3bc7438d67fe495fe0bf3
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 01bce16187c8c834cbd714037e95c508
+  - enabled: 1
+    path: Assets/Scenes/About.unity
+    guid: 6297a784bbdf8d0488d27cf29c340889
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: b112ef9529b44864582ee00c0af076e5
+  - enabled: 1
+    path: Assets/Scenes/Setting.unity
+    guid: 024bb7ae045bf88409a14b60ac95a16b
+  - enabled: 1
+    path: Assets/Scenes/DurationSelect.unity
+    guid: 719ea29077a178c48aeb3ed92dcd0b79
+  - enabled: 1
+    path: Assets/Scenes/Gameplay.unity
+    guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
