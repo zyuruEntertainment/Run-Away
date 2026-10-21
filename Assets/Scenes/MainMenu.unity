@@ -449,6 +449,7 @@ GameObject:
   - component: {fileID: 826772668}
   - component: {fileID: 826772667}
   - component: {fileID: 826772671}
+  - component: {fileID: 826772672}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: Untagged
@@ -585,11 +586,11 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 930e77533658a7b459932691d6b49373, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -671,6 +672,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &826772672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826772666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4152929ef83bb9244a97a4d03dc23bc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectFloating
+  amplitude: 0.3
+  frequency: 1
+  rotationAmount: 3
 --- !u!1001 &1024238788
 PrefabInstance:
   m_ObjectHideFlags: 0
