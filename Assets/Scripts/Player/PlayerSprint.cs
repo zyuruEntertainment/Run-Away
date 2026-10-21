@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerSprint : MonoBehaviour
 {
     [Header("Sprint")]
@@ -14,7 +16,12 @@ public class PlayerSprint : MonoBehaviour
     public float staminaRegen = 15f;
     public float regenDelay = 1f;
 
+    [Header("Audio")]
+    public AudioClip panicSound;
+    public AudioClip heavyBreathingSound;
+
     public float CurrentStamina { get; private set; }
+
     public float StaminaPercent => maxStamina > 0f
         ? CurrentStamina / maxStamina
         : 0f;
@@ -23,11 +30,18 @@ public class PlayerSprint : MonoBehaviour
 
     private float regenTimer;
     private FPSController movement;
+    private AudioSource audioSource;
+    private bool panicPlayed;
+    private bool breathingPlayed;
 
     private void Awake()
     {
         movement = GetComponent<FPSController>();
+        audioSource = GetComponent<AudioSource>();
         CurrentStamina = maxStamina;
+
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
     }
 
     private void Update()
@@ -42,6 +56,8 @@ public class PlayerSprint : MonoBehaviour
              Keyboard.current.aKey.isPressed ||
              Keyboard.current.sKey.isPressed ||
              Keyboard.current.dKey.isPressed);
+
+        bool wasSprinting = IsSprinting;
 
         IsSprinting =
             sprintHeld &&
@@ -68,6 +84,36 @@ public class PlayerSprint : MonoBehaviour
         if (CurrentStamina <= 0f)
         {
             IsSprinting = false;
+        }
+
+        if (IsSprinting && !wasSprinting && !panicPlayed)
+        {
+            if (panicSound != null)
+            {
+                audioSource.PlayOneShot(panicSound);
+            }
+
+            panicPlayed = true;
+        }
+
+        if (!IsSprinting)
+        {
+            panicPlayed = false;
+        }
+
+        if (CurrentStamina <= 0f && !breathingPlayed)
+        {
+            if (heavyBreathingSound != null)
+            {
+                audioSource.PlayOneShot(heavyBreathingSound);
+            }
+
+            breathingPlayed = true;
+        }
+
+        if (CurrentStamina > 0f)
+        {
+            breathingPlayed = false;
         }
 
         if (movement != null)
