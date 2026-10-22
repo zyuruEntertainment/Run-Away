@@ -149,9 +149,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntroSceneTransition
   fadeCanvas: {fileID: 2094257020}
-  fadeInDuration: 1
+  fadeInDuration: 3
   waitDuration: 0.5
-  fadeOutDuration: 1
+  fadeOutDuration: 3
   loadingSceneName: Loading
   targetSceneName: MainMenu
 --- !u!4 &799172865

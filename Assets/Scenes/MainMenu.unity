@@ -598,6 +598,7 @@ GameObject:
   m_Component:
   - component: {fileID: 410219008}
   - component: {fileID: 410219009}
+  - component: {fileID: 410219010}
   m_Layer: 5
   m_Name: BackgroundMusic
   m_TagString: Untagged
@@ -674,6 +675,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &410219010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410219007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fcfbcd5663535a49a0631183f005c6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToggleBGM
+  audioSource: {fileID: 826772671}
 --- !u!1 &491152481
 GameObject:
   m_ObjectHideFlags: 0
