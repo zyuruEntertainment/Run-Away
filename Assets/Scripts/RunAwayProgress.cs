@@ -6,31 +6,50 @@ public static class RunAwayProgress
     private const string DurationKey = "RunAway_Duration";
     private const string BestInfinityKey = "RunAway_BestInfinity";
 
+    // 0 = Infinity, 3 = 3 menit, 5 = 5 menit, 10 = 10 menit.
     public static int SelectedDuration
     {
-        get => PlayerPrefs.GetInt(DurationKey, 3);
+        get
+        {
+            int duration = PlayerPrefs.GetInt(DurationKey, 3);
+
+            if (duration != 0 && duration != 3 &&
+                duration != 5 && duration != 10)
+            {
+                duration = 3;
+            }
+
+            return duration;
+        }
         set
         {
+            if (value != 0 && value != 3 &&
+                value != 5 && value != 10)
+            {
+                Debug.LogWarning("Durasi tidak valid: " + value);
+                return;
+            }
+
             PlayerPrefs.SetInt(DurationKey, value);
             PlayerPrefs.Save();
+
+            Debug.Log("Durasi tersimpan: " +
+                (value == 0 ? "Infinity" : value + " menit"));
         }
     }
 
-    // 0 = infinity, 3, 5, 10 = countdown
     public static bool IsInfinity => SelectedDuration == 0;
 
     public static void UnlockAchievement(int minutes)
     {
-        PlayerPrefs.SetInt(
-            $"RunAway_Achievement_{minutes}m", 1);
-
+        PlayerPrefs.SetInt("RunAway_Achievement_" + minutes + "m", 1);
         PlayerPrefs.Save();
     }
 
     public static bool IsAchievementUnlocked(int minutes)
     {
         return PlayerPrefs.GetInt(
-            $"RunAway_Achievement_{minutes}m", 0) == 1;
+            "RunAway_Achievement_" + minutes + "m", 0) == 1;
     }
 
     public static float BestInfinityTime

@@ -285,6 +285,7 @@ MonoBehaviour:
   toggle5m: {fileID: 851557142}
   toggle10m: {fileID: 1851028253}
   toggleInfinity: {fileID: 652946798}
+  toggleGroup: {fileID: 983336491}
 --- !u!4 &179353779
 Transform:
   m_ObjectHideFlags: 0

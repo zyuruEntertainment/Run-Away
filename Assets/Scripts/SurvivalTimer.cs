@@ -22,13 +22,19 @@ public class SurvivalTimer : MonoBehaviour
         Time.timeScale = 1f;
 
         int duration = RunAwayProgress.SelectedDuration;
-        isInfinity = duration == 0;
 
+        isInfinity = duration == 0;
         elapsedTime = 0f;
         remainingTime = duration * 60f;
 
+        Debug.Log(
+            "Timer memulai mode: " +
+            (isInfinity ? "Infinity" : duration + " menit")
+        );
+
         UpdateDisplay();
     }
+
 
     private void Update()
     {
