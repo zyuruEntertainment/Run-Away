@@ -1,6 +1,7 @@
 ﻿
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerSprint : MonoBehaviour
@@ -32,6 +33,10 @@ public class PlayerSprint : MonoBehaviour
     private float regenTimer;
     private FPSController movement;
     private bool breathingPlayed;
+    private bool mobileSprintHeld;
+
+    private bool IsMobile =>
+        ControlModeSettings.CurrentMode == ControlMode.Mobile;
 
     private void Awake()
     {
@@ -51,18 +56,59 @@ public class PlayerSprint : MonoBehaviour
         }
     }
 
+    // Dipanggil saat tombol sprint ditekan.
+    public void StartSprint()
+    {
+        mobileSprintHeld = true;
+    }
+
+    // Dipanggil saat tombol sprint dilepas.
+    public void StopSprint()
+    {
+        mobileSprintHeld = false;
+    }
+
     private void Update()
     {
-        bool sprintHeld =
+        if (Time.timeScale == 0f)
+        {
+            IsSprinting = false;
+
+            if (movement != null)
+                movement.moveSpeed = movement.walkSpeed;
+
+            return;
+        }
+
+        bool keyboardSprint =
             Keyboard.current != null &&
             Keyboard.current[sprintKey].isPressed;
 
-        bool moving =
+        bool keyboardMoving =
             Keyboard.current != null &&
             (Keyboard.current.wKey.isPressed ||
              Keyboard.current.aKey.isPressed ||
              Keyboard.current.sKey.isPressed ||
              Keyboard.current.dKey.isPressed);
+
+        bool moving;
+
+        if (IsMobile)
+        {
+            // Periksa input joystick mobile.
+            moving =
+                movement != null &&
+                movement.movementJoystick != null &&
+                movement.movementJoystick.InputDirection.sqrMagnitude > 0.01f;
+        }
+        else
+        {
+            moving = keyboardMoving;
+        }
+
+        bool sprintHeld = IsMobile
+            ? mobileSprintHeld
+            : keyboardSprint;
 
         bool wasSprinting = IsSprinting;
 
@@ -76,6 +122,9 @@ public class PlayerSprint : MonoBehaviour
             CurrentStamina -= staminaDrain * Time.deltaTime;
             CurrentStamina = Mathf.Max(0f, CurrentStamina);
             regenTimer = regenDelay;
+
+            if (CurrentStamina <= 0f)
+                IsSprinting = false;
         }
         else
         {
@@ -88,11 +137,7 @@ public class PlayerSprint : MonoBehaviour
             }
         }
 
-        if (CurrentStamina <= 0f)
-        {
-            IsSprinting = false;
-        }
-
+        // Suara panik saat mulai sprint.
         if (IsSprinting && !wasSprinting)
         {
             if (panicAudioSource != null && panicSound != null)
@@ -104,6 +149,7 @@ public class PlayerSprint : MonoBehaviour
             }
         }
 
+        // Hentikan suara panik saat sprint berhenti.
         if (!IsSprinting && wasSprinting)
         {
             if (panicAudioSource != null)
@@ -113,6 +159,7 @@ public class PlayerSprint : MonoBehaviour
             }
         }
 
+        // Suara napas berat saat stamina habis.
         if (CurrentStamina <= 0f && !breathingPlayed)
         {
             if (breathingAudioSource != null &&
@@ -127,16 +174,30 @@ public class PlayerSprint : MonoBehaviour
             breathingPlayed = true;
         }
 
+        // Izinkan suara napas diputar lagi setelah stamina pulih.
         if (CurrentStamina > 0f)
         {
             breathingPlayed = false;
         }
 
+        // Terapkan kecepatan ke FPSController.
         if (movement != null)
         {
             movement.moveSpeed = IsSprinting
                 ? sprintSpeed
                 : movement.walkSpeed;
         }
+    }
+
+    private void OnDisable()
+    {
+        mobileSprintHeld = false;
+        IsSprinting = false;
+
+        if (movement != null)
+            movement.moveSpeed = movement.walkSpeed;
+
+        if (panicAudioSource != null)
+            panicAudioSource.Stop();
     }
 }

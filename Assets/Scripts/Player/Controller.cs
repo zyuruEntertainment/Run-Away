@@ -31,6 +31,9 @@ public class FPSController : MonoBehaviour
     private bool isPaused;
     private bool wasMobile;
 
+    // Permintaan lompat dari tombol UI.
+    private bool jumpRequested;
+
     private bool IsMobile =>
         ControlModeSettings.CurrentMode == ControlMode.Mobile;
 
@@ -164,6 +167,19 @@ public class FPSController : MonoBehaviour
             Quaternion.Euler(cameraPitch, 0f, 0f);
     }
 
+    // Dipanggil oleh Button UI melalui On Click().
+    public void Jump()
+    {
+        if (controller == null)
+            return;
+
+        // Tidak menerima lompat saat pemain sedang di udara.
+        if (!controller.isGrounded || verticalVelocity > 0f)
+            return;
+
+        jumpRequested = true;
+    }
+
     private void Move()
     {
         bool grounded = controller.isGrounded;
@@ -179,7 +195,7 @@ public class FPSController : MonoBehaviour
 
         if (IsMobile)
         {
-            // Gerakan hanya berasal dari joystick mobile.
+            // Gerakan berasal dari joystick mobile.
             if (movementJoystick != null)
             {
                 Vector2 joystickInput =
@@ -191,7 +207,7 @@ public class FPSController : MonoBehaviour
         }
         else if (Keyboard.current != null)
         {
-            // Gerakan desktop seperti script lama.
+            // Kontrol desktop.
             if (Keyboard.current.aKey.isPressed) x -= 1f;
             if (Keyboard.current.dKey.isPressed) x += 1f;
             if (Keyboard.current.sKey.isPressed) z -= 1f;
@@ -219,11 +235,20 @@ public class FPSController : MonoBehaviour
             acceleration * Time.deltaTime
         );
 
-        if (grounded && jumpPressed)
+        // Lompat dari Space atau tombol UI.
+        if (grounded && (jumpPressed || jumpRequested))
         {
             verticalVelocity = Mathf.Sqrt(
                 jumpHeight * -2f * gravity
             );
+
+            jumpRequested = false;
+        }
+
+        // Batalkan permintaan jika pemain sudah tidak di tanah.
+        else if (!grounded && jumpRequested)
+        {
+            jumpRequested = false;
         }
 
         verticalVelocity += gravity * Time.deltaTime;
@@ -236,6 +261,8 @@ public class FPSController : MonoBehaviour
 
     private void OnDisable()
     {
+        jumpRequested = false;
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
