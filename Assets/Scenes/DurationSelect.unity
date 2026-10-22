@@ -1010,7 +1010,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 269920353}
   toggleTransition: 1
   graphic: {fileID: 463619115}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 983336491}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1441,11 +1441,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2134954830}
   toggleTransition: 1
   graphic: {fileID: 860347137}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 983336491}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &860347135
 GameObject:
   m_ObjectHideFlags: 0
@@ -1596,6 +1596,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886750875}
   m_CullTransparentMesh: 1
+--- !u!1 &983336490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 983336492}
+  - component: {fileID: 983336491}
+  m_Layer: 0
+  m_Name: DurationToggleGroup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &983336491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983336490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ToggleGroup
+  m_AllowSwitchOff: 0
+--- !u!4 &983336492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983336490}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1170, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &988205207
 GameObject:
   m_ObjectHideFlags: 0
@@ -2147,11 +2192,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 296463377}
   toggleTransition: 1
   graphic: {fileID: 886750877}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 983336491}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1871029509
 GameObject:
   m_ObjectHideFlags: 0
@@ -2233,11 +2278,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1352903968}
   toggleTransition: 1
   graphic: {fileID: 687915459}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 983336491}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &2027716490
 GameObject:
   m_ObjectHideFlags: 0
@@ -2405,3 +2450,4 @@ SceneRoots:
   - {fileID: 988205209}
   - {fileID: 513954161}
   - {fileID: 179353779}
+  - {fileID: 983336492}
