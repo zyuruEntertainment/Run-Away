@@ -1,7 +1,6 @@
 ﻿
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
 public class MobileLookArea : MonoBehaviour,
     IPointerDownHandler,
@@ -11,18 +10,14 @@ public class MobileLookArea : MonoBehaviour,
     private Vector2 lastPosition;
     private Vector2 lookDelta;
     private int activePointerId = int.MinValue;
-
-    // True jika sentuhan dimulai dari tombol Run atau Jump.
     private bool trackingButtonPointer;
 
     private void OnEnable()
     {
-        trackingButtonPointer = false;
-        activePointerId = int.MinValue;
-        lookDelta = Vector2.zero;
+        ResetTracking();
     }
 
-    // Input normal ketika jari dimulai di area kamera.
+    // Sentuhan yang dimulai di area kamera.
     public void OnPointerDown(PointerEventData eventData)
     {
         if (activePointerId != int.MinValue)
@@ -35,34 +30,28 @@ public class MobileLookArea : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (trackingButtonPointer)
+        if (trackingButtonPointer ||
+            eventData.pointerId != activePointerId)
             return;
 
-        if (eventData.pointerId != activePointerId)
-            return;
-
-        Vector2 currentPosition = eventData.position;
-
-        lookDelta += currentPosition - lastPosition;
-        lastPosition = currentPosition;
+        AddLookMovement(eventData.position);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (eventData.pointerId != activePointerId ||
-            trackingButtonPointer)
+        if (trackingButtonPointer ||
+            eventData.pointerId != activePointerId)
             return;
 
         ResetTracking();
     }
 
-    // Hubungkan ke Pointer Down pada tombol Run dan Jump.
+    // Dipanggil saat jari mulai menekan Run atau Jump.
     public void BeginLookFromButton(BaseEventData eventData)
     {
         if (!(eventData is PointerEventData pointerData))
             return;
 
-        // Jangan mengambil alih pointer kamera yang sedang aktif.
         if (activePointerId != int.MinValue)
             return;
 
@@ -71,7 +60,20 @@ public class MobileLookArea : MonoBehaviour,
         trackingButtonPointer = true;
     }
 
-    // Hubungkan ke Pointer Up pada tombol Run dan Jump.
+    // Dipanggil setiap jari bergerak ketika menekan Run atau Jump.
+    public void DragLookFromButton(BaseEventData eventData)
+    {
+        if (!(eventData is PointerEventData pointerData))
+            return;
+
+        if (!trackingButtonPointer ||
+            pointerData.pointerId != activePointerId)
+            return;
+
+        AddLookMovement(pointerData.position);
+    }
+
+    // Dipanggil saat jari dilepas dari Run atau Jump.
     public void EndLookFromButton(BaseEventData eventData)
     {
         if (!(eventData is PointerEventData pointerData))
@@ -84,41 +86,10 @@ public class MobileLookArea : MonoBehaviour,
         ResetTracking();
     }
 
-    private void Update()
+    private void AddLookMovement(Vector2 currentPosition)
     {
-        if (!trackingButtonPointer ||
-            activePointerId == int.MinValue)
-            return;
-
-        if (Touchscreen.current == null)
-        {
-            ResetTracking();
-            return;
-        }
-
-        // Cari jari yang memulai sentuhan pada tombol.
-        foreach (var touch in Touchscreen.current.touches)
-        {
-            if (touch.touchId.ReadValue() != activePointerId)
-                continue;
-
-            if (!touch.press.isPressed)
-            {
-                ResetTracking();
-                return;
-            }
-
-            Vector2 currentPosition =
-                touch.position.ReadValue();
-
-            lookDelta += currentPosition - lastPosition;
-            lastPosition = currentPosition;
-
-            return;
-        }
-
-        // Jangan reset hanya karena sentuhan belum ditemukan
-        // pada frame ini. Pointer Up akan mengakhiri tracking.
+        lookDelta += currentPosition - lastPosition;
+        lastPosition = currentPosition;
     }
 
     public Vector2 ConsumeDelta()
