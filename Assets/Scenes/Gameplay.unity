@@ -1555,14 +1555,15 @@ MonoBehaviour:
   mouseSensitivity: 2
   minLookAngle: -85
   maxLookAngle: 85
-  movementJoystick: {fileID: 1622840129}
-  cameraLookArea: {fileID: 1396061185}
   walkSpeed: 6
   moveSpeed: 6
   groundAcceleration: 25
   airAcceleration: 2
   jumpHeight: 2
   gravity: -20
+  movementJoystick: {fileID: 1622840129}
+  cameraLookArea: {fileID: 1396061185}
+  mobileControlsRoot: {fileID: 1622840128}
 --- !u!143 &476435678
 CharacterController:
   m_ObjectHideFlags: 0

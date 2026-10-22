@@ -11,49 +11,40 @@ public class FPSController : MonoBehaviour
     public float minLookAngle = -85f;
     public float maxLookAngle = 85f;
 
-    [Header("Mobile Controls")]
-    public MobileJoystick movementJoystick;
-    public MobileLookArea cameraLookArea;
-
     [Header("Movement")]
     public float walkSpeed = 6f;
     public float moveSpeed = 6f;
     public float groundAcceleration = 25f;
     public float airAcceleration = 2f;
-
-    [Header("Jump & Gravity")]
     public float jumpHeight = 2f;
     public float gravity = -20f;
+
+    [Header("Mobile Controls")]
+    public MobileJoystick movementJoystick;
+    public MobileLookArea cameraLookArea;
+    public GameObject mobileControlsRoot;
 
     private CharacterController controller;
     private Vector3 horizontalVelocity;
     private float verticalVelocity;
     private float cameraPitch;
     private bool isPaused;
+    private bool wasMobile;
+
+    private bool IsMobile =>
+        ControlModeSettings.CurrentMode == ControlMode.Mobile;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-
         moveSpeed = walkSpeed;
         mouseSensitivity = GameSettings.MouseSensitivity;
 
-        if (playerCamera != null)
-        {
-            cameraPitch = playerCamera.localEulerAngles.x;
-
-            if (cameraPitch > 180f)
-                cameraPitch -= 360f;
-        }
-
-        if (!Application.isMobilePlatform)
-            LockCursor();
+        ApplyControlMode();
     }
 
     private void Update()
     {
-        mouseSensitivity = GameSettings.MouseSensitivity;
-
         if (Time.timeScale == 0f)
         {
             isPaused = true;
@@ -63,21 +54,52 @@ public class FPSController : MonoBehaviour
         if (isPaused)
         {
             isPaused = false;
-
-            if (!Application.isMobilePlatform)
-                LockCursor();
+            ApplyControlMode();
         }
 
-        HandleCursor();
-        Look();
+        // Periksa jika mode kontrol berubah.
+        if (wasMobile != IsMobile)
+        {
+            ApplyControlMode();
+        }
+
+        mouseSensitivity = GameSettings.MouseSensitivity;
+
+        if (IsMobile)
+        {
+            LookMobile();
+        }
+        else
+        {
+            HandleCursor();
+            LookDesktop();
+        }
+
         Move();
+    }
+
+    private void ApplyControlMode()
+    {
+        wasMobile = IsMobile;
+
+        if (mobileControlsRoot != null)
+        {
+            mobileControlsRoot.SetActive(IsMobile);
+        }
+
+        if (IsMobile)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            LockCursor();
+        }
     }
 
     private void HandleCursor()
     {
-        if (Application.isMobilePlatform)
-            return;
-
         if (Keyboard.current != null &&
             Keyboard.current.escapeKey.wasPressedThisFrame)
         {
@@ -92,40 +114,42 @@ public class FPSController : MonoBehaviour
         Cursor.visible = false;
     }
 
-    private void Look()
+    private void LookDesktop()
     {
-        if (playerCamera == null)
-            return;
-
-        Vector2 lookDelta = Vector2.zero;
-
-        // Prioritaskan input sentuh jika tersedia.
-        if (cameraLookArea != null)
-            lookDelta = cameraLookArea.ConsumeDelta();
-
-        // Kamera HP: geser jari di area look.
-        if (lookDelta.sqrMagnitude > 0f)
+        if (Mouse.current == null ||
+            Cursor.lockState != CursorLockMode.Locked ||
+            playerCamera == null)
         {
-            ApplyLook(lookDelta);
             return;
         }
 
-        // Kamera PC: gunakan mouse.
-        if (Application.isMobilePlatform)
-            return;
-
-        if (Mouse.current == null ||
-            Cursor.lockState != CursorLockMode.Locked)
-            return;
-
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
-        ApplyLook(mouseDelta);
+
+        float mouseX = mouseDelta.x * mouseSensitivity * 0.05f;
+        float mouseY = mouseDelta.y * mouseSensitivity * 0.05f;
+
+        transform.Rotate(Vector3.up * mouseX);
+
+        cameraPitch -= mouseY;
+        cameraPitch = Mathf.Clamp(
+            cameraPitch,
+            minLookAngle,
+            maxLookAngle
+        );
+
+        playerCamera.localRotation =
+            Quaternion.Euler(cameraPitch, 0f, 0f);
     }
 
-    private void ApplyLook(Vector2 delta)
+    private void LookMobile()
     {
-        float mouseX = delta.x * mouseSensitivity * 0.05f;
-        float mouseY = delta.y * mouseSensitivity * 0.05f;
+        if (playerCamera == null || cameraLookArea == null)
+            return;
+
+        Vector2 touchDelta = cameraLookArea.ConsumeDelta();
+
+        float mouseX = touchDelta.x * mouseSensitivity * 0.05f;
+        float mouseY = touchDelta.y * mouseSensitivity * 0.05f;
 
         transform.Rotate(Vector3.up * mouseX);
 
@@ -145,36 +169,45 @@ public class FPSController : MonoBehaviour
         bool grounded = controller.isGrounded;
 
         if (grounded && verticalVelocity < 0f)
+        {
             verticalVelocity = -2f;
+        }
 
         float x = 0f;
         float z = 0f;
+        bool jumpPressed = false;
 
-        // Input keyboard untuk PC.
-        if (Keyboard.current != null)
+        if (IsMobile)
         {
+            // Gerakan hanya berasal dari joystick mobile.
+            if (movementJoystick != null)
+            {
+                Vector2 joystickInput =
+                    movementJoystick.InputDirection;
+
+                x = joystickInput.x;
+                z = joystickInput.y;
+            }
+        }
+        else if (Keyboard.current != null)
+        {
+            // Gerakan desktop seperti script lama.
             if (Keyboard.current.aKey.isPressed) x -= 1f;
             if (Keyboard.current.dKey.isPressed) x += 1f;
             if (Keyboard.current.sKey.isPressed) z -= 1f;
             if (Keyboard.current.wKey.isPressed) z += 1f;
+
+            jumpPressed =
+                Keyboard.current.spaceKey.wasPressedThisFrame;
         }
 
-        Vector2 input = new Vector2(x, z);
+        Vector3 input =
+            transform.right * x +
+            transform.forward * z;
 
-        // Joystick menggantikan input keyboard saat digerakkan.
-        if (movementJoystick != null &&
-            movementJoystick.InputDirection.sqrMagnitude > 0.001f)
-        {
-            input = movementJoystick.InputDirection;
-        }
+        input = Vector3.ClampMagnitude(input, 1f);
 
-        input = Vector2.ClampMagnitude(input, 1f);
-
-        Vector3 direction =
-            transform.right * input.x +
-            transform.forward * input.y;
-
-        Vector3 targetVelocity = direction * moveSpeed;
+        Vector3 targetVelocity = input * moveSpeed;
 
         float acceleration = grounded
             ? groundAcceleration
@@ -186,10 +219,7 @@ public class FPSController : MonoBehaviour
             acceleration * Time.deltaTime
         );
 
-        // Jump tetap tersedia untuk keyboard.
-        if (grounded &&
-            Keyboard.current != null &&
-            Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (grounded && jumpPressed)
         {
             verticalVelocity = Mathf.Sqrt(
                 jumpHeight * -2f * gravity
@@ -206,10 +236,7 @@ public class FPSController : MonoBehaviour
 
     private void OnDisable()
     {
-        if (!Application.isMobilePlatform)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
