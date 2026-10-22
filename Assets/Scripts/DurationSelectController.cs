@@ -41,6 +41,7 @@ public class DurationSelectController : MonoBehaviour
         toggleInfinity.SetIsOnWithoutNotify(false);
     }
 
+
     public void StartGame()
     {
         if (toggle3m.isOn)
@@ -57,7 +58,13 @@ public class DurationSelectController : MonoBehaviour
             return;
         }
 
+        // Simpan tujuan scene sebelum membuka loading.
+        SceneLoader.TargetSceneName = "Gameplay";
+
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Gameplay");
+
+        // Gunakan sistem loading yang sudah ada.
+        SceneManager.LoadScene("Loading");
     }
+
 }
